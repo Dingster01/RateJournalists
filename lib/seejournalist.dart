@@ -28,11 +28,49 @@ class SeeJournalistsPage extends StatefulWidget {
 class _SeeJournalistsPageState extends State<SeeJournalistsPage> {
   final myController = TextEditingController();
   final DatabaseReference ref = FirebaseDatabase.instance.reference();
+  bool _increaseDisabled = false;
+  bool _decreasedDisabled = false;
+
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
     myController.dispose();
     super.dispose();
+  }
+
+  void _decreaseValue(){
+    ref.child("journalists/" + widget.journalist['id']).update(
+        {
+          "value": widget.journalist['value'] -= 1,
+        }).then((res) {
+      print("Decreased journalist's value");
+    }).catchError((e) {
+      print("Error: " + e.toString());
+    });
+
+    setState(() {
+      Text('Value: ${widget.journalist['value']}');
+      _decreasedDisabled = true;
+      _increaseDisabled = false;
+    });
+
+  }
+
+  void _increaseValue(){
+    ref.child("journalists/" + widget.journalist['id']).update(
+        {
+          "value": widget.journalist['value'] += 1,
+        }).then((res) {
+      print("Increased the journalist's value");
+    }).catchError((e) {
+      print("Error: " + e.toString());
+    });
+
+    setState(() {
+      Text('Credibility: ${widget.journalist['value']}');
+      _increaseDisabled = true;
+      _decreasedDisabled = false;
+    });
   }
 
   @override
@@ -46,17 +84,13 @@ class _SeeJournalistsPageState extends State<SeeJournalistsPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text('${widget.journalist['name']}'),
-            Text('Value: ${widget.journalist['value']}'),
+            Text('Credibility: ${widget.journalist['value']}'),
             Row(
               children: <Widget>[
                 Container(
                   child: FloatingActionButton(
                     heroTag: "subtract",
-                    onPressed: () {
-                      setState(() {
-                        widget.journalist['value'] -= 1;
-                      });
-                    },
+                    onPressed: _decreasedDisabled ? null : () {_decreaseValue();},
                     child: Icon(Icons.remove),
                   ),
                   alignment: Alignment(1.0, 1.0),
@@ -65,17 +99,7 @@ class _SeeJournalistsPageState extends State<SeeJournalistsPage> {
                 Container(
                   child: FloatingActionButton(
                     heroTag: "add",
-                    onPressed: () {
-
-                      ref.child("journalists/").once().then((ds) {
-                        setState(() {
-                          widget.journalist['value'] += 1;
-                        });
-                      }).catchError((e) {
-                        print("Error: " + e.toString());
-                      });
-
-                    },
+                    onPressed: _increaseDisabled ? null : () {_increaseValue();} ,
                     child: Icon(Icons.add),
                   ),
                   //alignment: Alignment(-1.0, 1.0),

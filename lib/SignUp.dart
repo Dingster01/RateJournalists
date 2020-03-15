@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'journalists.dart';
+import 'addJournalist.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 
@@ -110,7 +110,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   .then((value) {
                     print("Sign Up Successful " + value.user.uid);
                     Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                              JournalistsPage(title: 'Journalists')),
+                              AddJournalistsPage(title: 'Add Journalists')),
                     );
                   }).catchError((e){
                     print("Sign Up Error: " + e.toString());

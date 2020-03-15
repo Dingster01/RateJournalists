@@ -117,11 +117,12 @@ class _AddJournalistsPageState extends State<AddJournalistsPage> {
               child: Text("Add"),
               onPressed: () {
                 print(nameEditingController.text.toString());
-                ref.child("journalists/" + new DateTime.now().millisecondsSinceEpoch.toString()).set(
+                String timeStamp = new DateTime.now().millisecondsSinceEpoch.toString();
+                ref.child("journalists/" + timeStamp).set(
                     {
                       "name": nameEditingController.text.toString(),
                       "value": 0,
-//                      "image": userIcons[_random.nextInt(userIcons.length)],
+                      "id": timeStamp,
                     }).then((res) {
                   print("Journalist is added ");
                 }).catchError((e) {
